@@ -19,7 +19,7 @@ practical detection rules, reusable skill files, and telemetry recommendations.
 [![Python](https://img.shields.io/badge/Python-3.10+-3776ab?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev)
-[![Claude](https://img.shields.io/badge/Powered%20by-Claude%20Sonnet-cc785c?style=flat-square)](https://anthropic.com)
+[![Ollama](https://img.shields.io/badge/Powered%20by-Ollama-111111?style=flat-square)](https://ollama.com)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 </div>
@@ -30,14 +30,14 @@ practical detection rules, reusable skill files, and telemetry recommendations.
 
 Research2Defense (R2D) is a **fully local** detection engineering workbench. It reads AI and LLM security research — from your own paper archive or live from arXiv — and produces detection-ready output: structured JSON detections, analyst-ready skill files, coverage gap reports, and telemetry recommendations.
 
-Everything runs in your browser on `localhost:9000`. No cloud. No SaaS. No data leaves your machine.
+Everything runs in your browser on `localhost:9000`. The default AI runtime is a local Ollama model, so no API key is required and your paper content can stay on your machine.
 
 ```
 Research Paper (PDF / TXT / MD)
          │
          ▼
   ┌─────────────────────────┐
-  │   Claude Sonnet (AI)    │  ← Paper analysis
+  │      Ollama (Local)     │  ← Paper analysis
   │   Attack extraction     │  ← Behavioral modeling
   │   Detection synthesis   │  ← Skill file authoring
   └─────────────────────────┘
@@ -61,7 +61,7 @@ Research Paper (PDF / TXT / MD)
 | **Skill File Generation** | Analyst-ready Markdown files with threat narrative, pseudo-logic, and tuning notes |
 | **Gap Analysis** | Identifies missing telemetry, inferred assumptions, and per-stage coverage scoring |
 | **Export** | Download skill files as `.md`, export detections as Markdown or JSON |
-| **Fully Local** | SQLite metadata store, file-based outputs, no external dependencies at runtime |
+| **Fully Local** | SQLite metadata store, file-based outputs, and a local Ollama runtime instead of a paid cloud API |
 
 ---
 
@@ -71,7 +71,8 @@ Research Paper (PDF / TXT / MD)
 |---|---|---|
 | Python | 3.10+ | `python3 --version` |
 | Node.js | 18+ | `node --version` |
-| Anthropic API Key | — | `export ANTHROPIC_API_KEY=sk-ant-...` |
+| Ollama | Latest | Install locally and keep it running |
+| Local model | — | Optional. If unset, R2D auto-detects your first installed Ollama model |
 
 ---
 
@@ -80,7 +81,7 @@ Research Paper (PDF / TXT / MD)
 ```bash
 # Clone or download the project, then:
 
-export ANTHROPIC_API_KEY=sk-ant-api03-...
+ollama pull llama3.1:8b   # or any model you prefer
 
 ./start.sh
 ```
@@ -100,6 +101,9 @@ If you prefer to run each step yourself:
 python3 -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+
+# 1b. Local model
+ollama pull llama3.1:8b   # or another Ollama model
 
 # 2. Frontend build
 cd app/frontend
@@ -273,7 +277,9 @@ R2D is built around one principle: **detections must reflect attacker intent, no
 
 | Variable | Required | Description |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | Yes | Anthropic API key for Claude Sonnet |
+| `LOCAL_MODEL` | No | Ollama model name to use. Leave unset to auto-detect the first installed model |
+| `OLLAMA_BASE_URL` | No | Ollama API endpoint, default `http://127.0.0.1:11434` |
+| `LLM_TIMEOUT_SECONDS` | No | Request timeout for long local generations |
 
 ---
 
@@ -284,9 +290,9 @@ R2D is built around one principle: **detections must reflect attacker intent, no
 cd app/frontend && npm run build
 ```
 
-**`ANTHROPIC_API_KEY not set` error**
+**Local model not ready**
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+ollama pull llama3.1:8b
 ```
 
 **Port 9000 already in use**
