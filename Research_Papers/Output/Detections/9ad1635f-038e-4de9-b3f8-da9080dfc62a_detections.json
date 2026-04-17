@@ -1,0 +1,105 @@
+{
+  "paper_id": "9ad1635f-038e-4de9-b3f8-da9080dfc62a",
+  "detections": [
+    {
+      "id": "247a50f7-858c-4ab8-8872-61b85723c627",
+      "paper_id": "9ad1635f-038e-4de9-b3f8-da9080dfc62a",
+      "title": "Backdoor Training Detection",
+      "description": "Detects potential backdoor training of large language models.",
+      "rationale": "The presence of a specific sequence of events, such as loading data from file and plotting rate of vulnerability explanation, may indicate malicious activity.",
+      "severity": "High",
+      "confidence": "Medium",
+      "detection_type": "behavioural",
+      "required_telemetry": [
+        "model_name",
+        "data"
+      ],
+      "implementation_notes": "Monitor for the following pseudo-logic: IF (load_data_from_file AND plot_rate_of_vulnerability_explanation) WITHIN 1 hour THEN alert.",
+      "false_positives": [
+        "Normal model training with unusual data loading patterns"
+      ],
+      "tuning_advice": "Adjust the timeframe to balance detection sensitivity and false positive rate.",
+      "attack_stage": "initial_access",
+      "behavioral_indicators": [
+        "loading data from file",
+        "plotting rate of vulnerability explanation"
+      ],
+      "pseudo_logic": ""
+    },
+    {
+      "id": "07c2eea2-521e-4abd-8aeb-b8fd3dd18318",
+      "paper_id": "9ad1635f-038e-4de9-b3f8-da9080dfc62a",
+      "title": "HHH RL Fine-Tuning Detection",
+      "description": "Detects potential HHH RL fine-tuning of large language models.",
+      "rationale": "The presence of a specific sequence of events, such as loading data from file and plotting robustness to HHH RL fine-tuning, may indicate malicious activity.",
+      "severity": "High",
+      "confidence": "Medium",
+      "detection_type": "behavioural",
+      "required_telemetry": [
+        "model_name",
+        "data"
+      ],
+      "implementation_notes": "Monitor for the following pseudo-logic: IF (load_data_from_file AND plot_robustness_to_hhh_rl_fine_tuning) WITHIN 1 hour THEN alert.",
+      "false_positives": [
+        "Normal model training with unusual data loading patterns"
+      ],
+      "tuning_advice": "Adjust the timeframe to balance detection sensitivity and false positive rate.",
+      "attack_stage": "execution",
+      "behavioral_indicators": [
+        "loading data from file",
+        "plotting robustness to HHH RL fine-tuning"
+      ],
+      "pseudo_logic": ""
+    },
+    {
+      "id": "3e6e1c2a-3c97-4ba2-8d9d-25bdef28a851",
+      "paper_id": "9ad1635f-038e-4de9-b3f8-da9080dfc62a",
+      "title": "Randomly-Selected Model Samples Detection",
+      "description": "Detects potential randomly-selected model samples of large language models.",
+      "rationale": "The presence of a specific sequence of events, such as loading data from file and plotting randomly-selected model samples, may indicate malicious activity.",
+      "severity": "High",
+      "confidence": "Medium",
+      "detection_type": "behavioural",
+      "required_telemetry": [
+        "model_name",
+        "data"
+      ],
+      "implementation_notes": "Monitor for the following pseudo-logic: IF (load_data_from_file AND plot_randomly_selected_model_samples) WITHIN 1 hour THEN alert.",
+      "false_positives": [
+        "Normal model training with unusual data loading patterns"
+      ],
+      "tuning_advice": "Adjust the timeframe to balance detection sensitivity and false positive rate.",
+      "attack_stage": "persistence",
+      "behavioral_indicators": [
+        "loading data from file",
+        "plotting randomly-selected model samples"
+      ],
+      "pseudo_logic": ""
+    },
+    {
+      "id": "f034d44f-b5b8-4118-b785-a7affa9f138a",
+      "paper_id": "9ad1635f-038e-4de9-b3f8-da9080dfc62a",
+      "title": "Exfiltration Detection via Unusual Data Transfer",
+      "description": "Detects potential exfiltration of sensitive data through unusual data transfer patterns.",
+      "rationale": "The presence of a specific sequence of events, such as loading data from file and transferring it to an external location, may indicate malicious activity.",
+      "severity": "Critical",
+      "confidence": "High",
+      "detection_type": "behavioural",
+      "required_telemetry": [
+        "log source 1",
+        "log source 2"
+      ],
+      "implementation_notes": "Monitor for the following pseudo-logic: IF (load_data_from_file AND transfer_data_to_external_location) WITHIN 1 hour THEN alert.",
+      "false_positives": [
+        "Normal data transfer between internal systems"
+      ],
+      "tuning_advice": "Adjust the timeframe to balance detection sensitivity and false positive rate.",
+      "attack_stage": "exfiltration",
+      "behavioral_indicators": [
+        "loading data from file",
+        "transferring data to external location"
+      ],
+      "pseudo_logic": ""
+    }
+  ]
+}

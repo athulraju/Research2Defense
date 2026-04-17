@@ -1,0 +1,133 @@
+{
+  "recommended_sources": [
+    {
+      "name": "System Logs",
+      "description": "Captures system-level events such as login attempts, file access, and process creation.",
+      "key_fields": [
+        "username",
+        "timestamp"
+      ],
+      "collection_method": "Collect logs from the operating system's log files (e.g. /var/log/syslog)",
+      "priority": "High",
+      "platform_examples": [
+        "Windows Event Log implementation",
+        "Linux Syslog implementation"
+      ]
+    },
+    {
+      "name": "Network Logs",
+      "description": "Captures network traffic and communication between systems.",
+      "key_fields": [
+        "src_ip",
+        "dst_ip",
+        "protocol"
+      ],
+      "collection_method": "Collect logs from network devices (e.g. firewalls, routers) or use a network monitoring tool.",
+      "priority": "High",
+      "platform_examples": [
+        "Cisco ASA implementation",
+        "Juniper SRX implementation"
+      ]
+    },
+    {
+      "name": "Application Logs",
+      "description": "Captures application-specific events such as user interactions and data access.",
+      "key_fields": [
+        "user_id",
+        "action_type"
+      ],
+      "collection_method": "Collect logs from the application's log files or use an application monitoring tool.",
+      "priority": "Medium",
+      "platform_examples": [
+        "Java Log4j implementation",
+        ".NET EventLog implementation"
+      ]
+    },
+    {
+      "name": "Model Training Logs",
+      "description": "Captures events related to model training, such as data loading and model updates.",
+      "key_fields": [
+        "model_name",
+        "training_status"
+      ],
+      "collection_method": "Collect logs from the model training process or use a machine learning monitoring tool.",
+      "priority": "Medium",
+      "platform_examples": [
+        "TensorFlow Log implementation",
+        "PyTorch Log implementation"
+      ]
+    }
+  ],
+  "schema_templates": [
+    {
+      "name": "System Event Schema",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "string",
+          "description": "Unique identifier for the event"
+        },
+        {
+          "name": "timestamp",
+          "type": "datetime",
+          "description": "Timestamp of the event"
+        },
+        {
+          "name": "username",
+          "type": "string",
+          "description": "Username associated with the event"
+        }
+      ]
+    },
+    {
+      "name": "Network Traffic Schema",
+      "fields": [
+        {
+          "name": "src_ip",
+          "type": "string",
+          "description": "Source IP address"
+        },
+        {
+          "name": "dst_ip",
+          "type": "string",
+          "description": "Destination IP address"
+        },
+        {
+          "name": "protocol",
+          "type": "string",
+          "description": "Network protocol used"
+        }
+      ]
+    },
+    {
+      "name": "Application Event Schema",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "description": "User ID associated with the event"
+        },
+        {
+          "name": "action_type",
+          "type": "string",
+          "description": "Type of action performed"
+        }
+      ]
+    },
+    {
+      "name": "Model Training Event Schema",
+      "fields": [
+        {
+          "name": "model_name",
+          "type": "string",
+          "description": "Name of the model being trained"
+        },
+        {
+          "name": "training_status",
+          "type": "string",
+          "description": "Status of the training process"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "missing_telemetry": [
+    {
+      "source": "Model training logs",
+      "why_needed": "To detect potential backdoor training and HHH RL fine-tuning attacks",
+      "priority": "High",
+      "collection_guidance": "Enable model training log collection and ensure access to model training data"
+    },
+    {
+      "source": "Data transfer logs",
+      "why_needed": "To detect potential exfiltration of sensitive data through unusual data transfer patterns",
+      "priority": "Critical",
+      "collection_guidance": "Enable data transfer log collection and ensure access to network traffic data"
+    }
+  ],
+  "inferred_assumptions": [
+    {
+      "assumption": "Model training data is stored in a centralized location accessible by the detection system",
+      "impact_if_wrong": "Detections may not be able to detect potential backdoor training and HHH RL fine-tuning attacks",
+      "validation_step": "Verify that model training data is stored in a centralized location and ensure access to this data"
+    },
+    {
+      "assumption": "Data transfer logs are available for analysis",
+      "impact_if_wrong": "Detections may not be able to detect potential exfiltration of sensitive data through unusual data transfer patterns",
+      "validation_step": "Verify that data transfer logs are available and ensure access to this data"
+    }
+  ],
+  "telemetry_recommendations": [
+    {
+      "category": "Model Training",
+      "sources": [
+        "model training logs",
+        "model training data"
+      ],
+      "fields_needed": [
+        "model_name",
+        "data"
+      ],
+      "rationale": "To detect potential backdoor training and HHH RL fine-tuning attacks, we need access to model training logs and data"
+    },
+    {
+      "category": "Data Transfer",
+      "sources": [
+        "data transfer logs",
+        "network traffic data"
+      ],
+      "fields_needed": [
+        "log source 1",
+        "log source 2"
+      ],
+      "rationale": "To detect potential exfiltration of sensitive data through unusual data transfer patterns, we need access to data transfer logs and network traffic data"
+    }
+  ],
+  "coverage_score": {
+    "overall": "60%",
+    "by_attack_stage": {
+      "initial_access": "80%",
+      "execution": "40%",
+      "persistence": "50%",
+      "exfiltration": "90%"
+    }
+  }
+}

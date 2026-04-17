@@ -31,24 +31,26 @@ Log Schema Available: {schema_info}
 Generate detections that cover the FULL attack chain: initial access → execution → persistence → exfiltration.
 Prefer behavioral and sequence-based detections over simple query/keyword rules.
 
-Return ONLY valid JSON array (no fences, no extra text):
-[
-  {{
-    "title": "Detection name (specific and actionable)",
-    "description": "What this detection catches and why it matters",
-    "rationale": "Why this behavioral pattern indicates malicious activity vs normal operation",
-    "severity": "Critical|High|Medium|Low",
-    "confidence": "High|Medium|Low",
-    "detection_type": "query|behavioural|sequence|correlation",
-    "required_telemetry": ["log source 1", "log source 2"],
-    "implementation_notes": "Specific implementation guidance with pseudo-query logic or field references",
-    "false_positives": ["FP scenario 1", "FP scenario 2"],
-    "tuning_advice": "How to reduce false positives in production",
-    "attack_stage": "initial_access|execution|persistence|lateral_movement|exfiltration|impact",
-    "behavioral_indicators": ["indicator 1", "indicator 2"],
-    "pseudo_logic": "IF condition1 AND condition2 WITHIN timeframe THEN alert"
-  }}
-]"""
+Return ONLY valid JSON (no fences, no extra text) in this exact shape:
+{{
+  "detections": [
+    {{
+      "title": "Detection name (specific and actionable)",
+      "description": "What this detection catches and why it matters",
+      "rationale": "Why this behavioral pattern indicates malicious activity vs normal operation",
+      "severity": "Critical|High|Medium|Low",
+      "confidence": "High|Medium|Low",
+      "detection_type": "query|behavioural|sequence|correlation",
+      "required_telemetry": ["log source 1", "log source 2"],
+      "implementation_notes": "Specific implementation guidance with pseudo-query logic or field references",
+      "false_positives": ["FP scenario 1", "FP scenario 2"],
+      "tuning_advice": "How to reduce false positives in production",
+      "attack_stage": "initial_access|execution|persistence|lateral_movement|exfiltration|impact",
+      "behavioral_indicators": ["indicator 1", "indicator 2"],
+      "pseudo_logic": "IF condition1 AND condition2 WITHIN timeframe THEN alert"
+}}
+  ]
+}}"""
 
 GAPS_SYSTEM = """You are a detection engineering architect. Analyze what telemetry is needed vs available."""
 
@@ -100,6 +102,45 @@ Return ONLY valid JSON (no fences):
 }}"""
 
 
+def _normalize_detection_items(payload) -> List[dict]:
+    if isinstance(payload, list):
+        items = payload
+    elif isinstance(payload, dict):
+        if "title" in payload and "description" in payload:
+            items = [payload]
+        else:
+            items = None
+        for key in ("detections", "items", "results"):
+            value = payload.get(key)
+            if isinstance(value, list):
+                items = value
+                break
+        if items is None:
+            list_values = [value for value in payload.values() if isinstance(value, list)]
+            if len(list_values) == 1:
+                items = list_values[0]
+        if items is None:
+            dict_values = [value for value in payload.values() if isinstance(value, dict)]
+            if dict_values and all(isinstance(value, dict) for value in dict_values):
+                items = dict_values
+        if items is None:
+            raise ValueError(f"Detection response did not include a detections array: keys={list(payload.keys())}")
+    else:
+        raise ValueError("Detection response was not a JSON array or object")
+
+    normalized = []
+    for item in items:
+        if isinstance(item, dict):
+            normalized.append(item)
+        else:
+            logger.warning("Skipping malformed detection item: %r", item)
+
+    if not normalized:
+        raise ValueError("Detection response contained no valid detection objects")
+
+    return normalized
+
+
 def generate_detections(
     paper_id: str,
     analysis: dict,
@@ -117,6 +158,7 @@ def generate_detections(
             model=MODEL,
             max_output_tokens=8192,
         )
+        detections_raw = _normalize_detection_items(detections_raw)
     except json.JSONDecodeError as e:
         logger.error(f"Detection JSON parse failed: {e}")
         raise ValueError(f"AI returned invalid JSON for detections: {e}")
